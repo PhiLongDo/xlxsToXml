@@ -5,9 +5,9 @@ excel_data = pd.read_excel('Languages.xlsx')
 # Read the values of the file in the dataframe
 df = pd.DataFrame(excel_data, columns=['code', 'vn', 'en', 'ja'])
 
-df['vn'] = df['vn'].str.replace('\n', '\\n')
-df['en'] = df['en'].str.replace('\n', '\\n')
-df['ja'] = df['ja'].str.replace('\n', '\\n')
+# df['vn'] = df['vn'].str.replace('\n', '\\n').str.replace('\'', '\\\'')
+# df['en'] = df['en'].str.replace('\n', '\\n').str.replace('\'', '\\\'')
+# df['ja'] = df['ja'].str.replace('\n', '\\n').str.replace('\'', '\\\'')
 
 sample = "<item name=\"{0}\">{1}</item>"
 
@@ -17,20 +17,26 @@ fja = open("ja/string_code.xml", "w", encoding="utf-8")
 fen = open("en/string_code.xml", "w", encoding="utf-8")
 for index, row in df.iterrows():
     # vn file
-    if (isinstance(row['vn'], str) == False):
+    if (pd.isna(row['vn'])):
         fvn.write(sample.replace("{0}", row['code']).replace("{1}", '')+'\n')
     else:
-        fvn.write(sample.replace("{0}", row['code']).replace("{1}", row['vn'])+'\n')
+        fvn.write(sample.replace("{0}", row['code']).replace("{1}", str(
+            row['vn']).replace('\n', '\\n').replace('\'', '\\\''))+'\n')
+
     # en file
-    if (isinstance(row['en'], str) == False):
+    if (pd.isna(row['en'])):
         fen.write(sample.replace("{0}", row['code']).replace("{1}", '')+'\n')
     else:
-        fen.write(sample.replace("{0}", row['code']).replace("{1}", row['en'])+'\n')
+        fen.write(sample.replace("{0}", row['code']).replace(
+            "{1}", str(row['en']).replace('\n', '\\n').replace('\'', '\\\''))+'\n')
+
     # vn file
-    if (isinstance(row['ja'], str) == False):
+    if (pd.isna(row['ja'])):
         fja.write(sample.replace("{0}", row['code']).replace("{1}", '')+'\n')
     else:
-        fja.write(sample.replace("{0}", row['code']).replace("{1}", row['ja'])+'\n')
+        fja.write(sample.replace("{0}", row['code']).replace(
+            "{1}", str(row['ja']).replace('\n', '\\n').replace('\'', '\\\''))+'\n')
+
 # close file
 fvn.close()
 fen.close()
